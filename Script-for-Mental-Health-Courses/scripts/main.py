@@ -1,4 +1,13 @@
 import time
+import sys
+import ctypes
+
+# 在导入屏幕操作库之前声明 DPI 感知，使截图和鼠标尽量使用同一坐标系。
+if sys.platform == "win32":
+    try:
+        ctypes.windll.user32.SetProcessDPIAware()
+    except (AttributeError, OSError):
+        pass
 from pathlib import Path
 
 import cv2
@@ -10,17 +19,11 @@ import pyautogui
 # 配置：请修改为你自己的图片路径
 # ==================================================
 
-PLAY_BUTTON_PATH = r"D:\ljh\Script-for-Mental-Health-Courses\scripts\pic\play_button.png"
-NEXT_BUTTON_PATH = r"D:\ljh\Script-for-Mental-Health-Courses\scripts\pic\next_button.png"
-END_ICON_PATH = r"D:\ljh\Script-for-Mental-Health-Courses\scripts\pic\end_icon.png"
-
-# 播放键、完成图标的优先搜索区域：
-# 格式为 (左上角 X, 左上角 Y, 宽度, 高度)
-# 如果不确定坐标，可以改成 None，表示搜索整个屏幕。
-PLAY_REGION = None
-# 只搜索视频上方的任务状态
-# 格式：(左上角 X, 左上角 Y, 宽度, 高度)
-END_REGION = (120, 300, 350, 100)
+# 将 pic 文件夹与本脚本放在同一目录。
+IMAGE_DIR = Path(__file__).resolve().parent / "pic"
+PLAY_BUTTON_PATH = IMAGE_DIR / "play_button.png"
+NEXT_BUTTON_PATH = IMAGE_DIR / "next_button.png"
+END_ICON_PATH = IMAGE_DIR / "end_icon.png"
 
 # 匹配阈值：越高越严格。
 # 如果误识别，适当调高；如果总是识别不到，可以少量调低。
@@ -29,7 +32,7 @@ NEXT_THRESHOLD = 0.78
 END_THRESHOLD = 0.82
 
 # 模板缩放范围，用于适应按钮大小变化。
-SCALES = (0.8, 0.9, 1.0, 1.1, 1.2)
+SCALES = tuple(i / 20 for i in range(10, 41))  # 0.50 至 2.00
 
 # 查找下一节时，最多向下滚动多少次。
 MAX_SCROLL_STEPS = 8
@@ -139,13 +142,13 @@ def find_image(template, region=None, threshold=0.78):
     return None, best_score
 
 
-def move_mouse_to_page():
+def move_mouse_to_page(course_region):
     """将鼠标移到屏幕中间，方便滚动页面。"""
-    screen_width, screen_height = pyautogui.size()
-    pyautogui.moveTo(screen_width // 2, screen_height // 2)
+    x, y, width, height = course_region
+    pyautogui.moveTo(x + width // 2, y + height // 2)
 
 
-def find_next_with_scrolling(next_template):
+def find_next_with_scrolling(next_template, course_region):
     """
     先搜索当前屏幕；如果没找到，逐步向下滚动并搜索。
     返回找到的位置及匹配分数。
@@ -166,19 +169,19 @@ def find_next_with_scrolling(next_template):
                 f"（{step + 1}/{MAX_SCROLL_STEPS}，"
                 f"当前最佳匹配度 {score:.2f}）"
             )
-            move_mouse_to_page()
+            move_mouse_to_page(course_region)
             pyautogui.scroll(SCROLL_AMOUNT)
             time.sleep(1)
 
     return None, score
 
 
-def scroll_back_to_top():
+def scroll_back_to_top(course_region):
     """
     尝试将页面滚回顶部。
     滚轮作用于鼠标所在位置，请确保鼠标所在区域可以滚动网页。
     """
-    move_mouse_to_page()
+    move_mouse_to_page(course_region)
     for _ in range(MAX_SCROLL_STEPS):
         pyautogui.scroll(abs(SCROLL_AMOUNT))
         time.sleep(0.1)
@@ -189,6 +192,14 @@ def main():
     end_template = load_template(END_ICON_PATH)
     next_template = load_template(NEXT_BUTTON_PATH)
 
+    width, height = pyautogui.size()
+    if pyautogui.screenshot().size != (width, height):
+        raise RuntimeError("截图尺寸与鼠标坐标不一致，请检查主显示器和显示缩放。")
+    course_region = (0, 0, width, height)
+    play_region = course_region
+    # 只检查屏幕左上方，降低误识别视频下方测验的可能性。
+    end_region = (0, 0, max(1, round(width * 0.75)), max(1, round(height * 0.35)))
+    print_with_timestamp(f"播放区域：{play_region}；完成标志区域：{end_region}")
     print_with_timestamp("脚本已启动，将持续检测任务完成状态。")
     print_with_timestamp("将鼠标移到屏幕左上角可紧急停止。")
 
@@ -196,7 +207,7 @@ def main():
         # 每一轮都先检测“任务点已完成”
         end_pos, end_score = find_image(
             end_template,
-            region=END_REGION,
+            region=end_region,
             threshold=END_THRESHOLD,
         )
 
@@ -207,7 +218,7 @@ def main():
             )
 
             # 先搜索当前屏幕，找不到就逐步向下滚动搜索
-            next_pos, next_score = find_next_with_scrolling(next_template)
+            next_pos, next_score = find_next_with_scrolling(next_template, course_region)
 
             if next_pos is None:
                 print_with_timestamp(
@@ -228,14 +239,14 @@ def main():
             time.sleep(PAGE_LOAD_WAIT)
 
             # 滚回顶部，让下一课的视频和完成标志进入视野
-            scroll_back_to_top()
+            scroll_back_to_top(course_region)
             print_with_timestamp("继续检测新课时。")
             continue
 
         # 没有检测到完成标志时，检查是否需要点击播放
         play_pos, play_score = find_image(
             play_template,
-            region=PLAY_REGION,
+            region=play_region,
             threshold=PLAY_THRESHOLD,
         )
 

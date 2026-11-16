@@ -64,17 +64,8 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
   <img src="./Script-for-Mental-Health-Courses/pic/1.png" width="800" alt="课程平台界面">
 </div>
 
-### 4. 修改图片路径
 
-打开 `main.py`，将脚本中的播放按钮、任务完成标志和下一节按钮图片路径，修改为当前电脑上的实际路径。
-
-<div align="center">
-  <img src="./Script-for-Mental-Health-Courses/pic/2.png" width="800" alt="修改图片路径">
-</div>
-
-脚本通过屏幕截图识别按钮。使用时请保持浏览器窗口大小、页面缩放比例和脚本中的搜索区域相匹配。
-
-### 5. 提前完成章节测验
+### 4. 提前完成章节测验
 
 本脚本用于播放视频，**不支持自动完成章节测验**。运行脚本前，请手动完成课程中需要完成的章节测验，章节测验可以无限提交。
 
@@ -84,7 +75,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
   <img src="./Script-for-Mental-Health-Courses/pic/3.png" width="800" alt="章节测验提示">
 </div>
 
-### 6. 运行脚本
+### 5. 运行脚本
 
 在已激活虚拟环境的终端中运行：
 
@@ -98,7 +89,7 @@ python main.py
 
 运行过程中，可以将鼠标移至屏幕左上角，触发紧急停止。
 
-### 7. 退出和清理环境
+### 6. 退出和清理环境
 
 使用完成后，在终端中退出虚拟环境：
 
