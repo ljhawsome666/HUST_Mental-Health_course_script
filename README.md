@@ -61,7 +61,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 在浏览器中登录课程平台，打开需要学习的课程页面。
 
 <div align="center">
-  <img src="./Script-for-Mental-Health-Courses/pic/1.png" width="600" alt="课程平台界面">
+  <img src="./Script-for-Mental-Health-Courses/pic/1.png" width="800" alt="课程平台界面">
 </div>
 
 ### 4. 修改图片路径
@@ -69,19 +69,19 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 打开 `main.py`，将脚本中的播放按钮、任务完成标志和下一节按钮图片路径，修改为当前电脑上的实际路径。
 
 <div align="center">
-  <img src="./Script-for-Mental-Health-Courses/pic/2.png" width="600" alt="修改图片路径">
+  <img src="./Script-for-Mental-Health-Courses/pic/2.png" width="800" alt="修改图片路径">
 </div>
 
 脚本通过屏幕截图识别按钮。使用时请保持浏览器窗口大小、页面缩放比例和脚本中的搜索区域相匹配。
 
 ### 5. 提前完成章节测验
 
-本脚本用于播放视频，**不支持自动完成章节测验**。运行脚本前，请手动完成课程中需要完成的章节测验。
+本脚本用于播放视频，**不支持自动完成章节测验**。运行脚本前，请手动完成课程中需要完成的章节测验，章节测验可以无限提交。
 
 💡 课程目录中，含有“2”的小节可能同时包含视频和章节测验，请打开对应小节检查。
 
 <div align="center">
-  <img src="./Script-for-Mental-Health-Courses/pic/3.png" width="600" alt="章节测验提示">
+  <img src="./Script-for-Mental-Health-Courses/pic/3.png" width="800" alt="章节测验提示">
 </div>
 
 ### 6. 运行脚本
@@ -93,6 +93,8 @@ python main.py
 ```
 
 运行后切回浏览器课程页面。脚本会识别播放按钮和视频任务完成状态，并在满足条件后查找下一节。
+
+可以手动开二倍速完成时间更快
 
 运行过程中，可以将鼠标移至屏幕左上角，触发紧急停止。
 
