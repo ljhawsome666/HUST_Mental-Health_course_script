@@ -80,7 +80,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 在已激活虚拟环境的终端中运行：
 
 ```powershell
-python main.py
+ python ./scripts/main.py
 ```
 
 运行后切回浏览器课程页面。脚本会识别播放按钮和视频任务完成状态，并在满足条件后查找下一节。
