@@ -81,7 +81,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 💡 课程目录中，含有“2”的小节可能同时包含视频和章节测验，请打开对应小节检查。
 
 <div align="center">
-  <img src="./Script-for-Mental-Health-Courses/pic/3.png" width="400" alt="章节测验提示">
+  <img src="./Script-for-Mental-Health-Courses/pic/3.png" width="600" alt="章节测验提示">
 </div>
 
 ### 6. 运行脚本

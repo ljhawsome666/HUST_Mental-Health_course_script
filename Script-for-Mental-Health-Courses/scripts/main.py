@@ -10,9 +10,9 @@ import pyautogui
 # 配置：请修改为你自己的图片路径
 # ==================================================
 
-PLAY_BUTTON_PATH = r"D:\ljh\Script-for-Mental-Health-Courses\1\play_button.png"
-NEXT_BUTTON_PATH = r"D:\ljh\Script-for-Mental-Health-Courses\1\next_button.png"
-END_ICON_PATH = r"D:\ljh\Script-for-Mental-Health-Courses\1\end_icon.png"
+PLAY_BUTTON_PATH = r"D:\ljh\Script-for-Mental-Health-Courses\scripts\pic\play_button.png"
+NEXT_BUTTON_PATH = r"D:\ljh\Script-for-Mental-Health-Courses\scripts\pic\next_button.png"
+END_ICON_PATH = r"D:\ljh\Script-for-Mental-Health-Courses\scripts\pic\end_icon.png"
 
 # 播放键、完成图标的优先搜索区域：
 # 格式为 (左上角 X, 左上角 Y, 宽度, 高度)
